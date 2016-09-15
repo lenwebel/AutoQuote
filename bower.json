@@ -1,0 +1,28 @@
+{
+  "name": "autoquote",
+  "description": "shield autoquote based on a provided file.",
+  "main": "app.js",
+  "authors": [
+    "webel"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "shield",
+    "auto",
+    "quote",
+    "autoquote"
+  ],
+  "homepage": "https://github.com/wombelite/AutoQuote",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "papaparse": "^4.1.2",
+    "jquery": "^3.1.0",
+    "bootstrap": "^3.3.7"
+  }
+}

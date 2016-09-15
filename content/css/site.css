@@ -18,7 +18,7 @@
 }
 
 .field_rownumber{
-width:35px;
+width:40px;
 }
 
 .field_3{
@@ -39,7 +39,7 @@ width:35px;
 }
 
 .validation_success{
-    background-color:limegreen;
+    background-color:#dcf5dc;
 }
 
 .template_dropdown{

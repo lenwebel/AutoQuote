@@ -6,8 +6,11 @@ var fileData;
 
 $(function(){
 
+var RESULTS_PER_PAGE = 25;
+
+
 var validators = [
-    "\\b[0-9]*$\\b" // numeric only.
+    "\\b[0-9]*\\b|[' ']" // numeric only.
     ];
 
     var HomeTemplate = [
@@ -22,7 +25,8 @@ var validators = [
     ];
 
 
-   init();
+    init();
+
 
     function init(){
 
@@ -36,11 +40,13 @@ var validators = [
 
     var fileInput = document.getElementById("csv");
 
-        readFile = function () {
+            readFile = function () {
             var reader = new FileReader();
+            
             reader.onload = function () {
                 document.getElementById('out').innerHTML = reader.result;
             };
+            
             // start reading the file. When it is done, calls the onload event defined above.
             var file = fileInput.files[0];
             reader.readAsBinaryString(file);
@@ -48,7 +54,7 @@ var validators = [
             Papa.parse(fileInput.files[0], {
                 complete: function(results) {
                 fileData = results;
-                ProcessFileData();
+                ProcessFileData(25);
             }
         });
     };
@@ -56,42 +62,49 @@ var validators = [
 
     Array.prototype.toDiv = writeToDiv;
 
-    function ProcessFileData(){
-        var div = fileData.data.toDiv();
-
+    function ProcessFileData(resultsPerPage,from=null){
+        var div = fileData.data.toDiv(resultsPerPage,from);
         var out = document.getElementById('out');
         out.innerHTML= "";
         out.appendChild(div);
-
         doValidation(fileData.data,validators);
-
+        
     }
 
-    function writeToDiv(){
-
-        var item = this;
+    function writeToDiv(resultsPerPage,from =null){
+        
+        var items = this;
+        
+        if(resultsPerPage != null && resultsPerPage != undefined && (from == null || from == undefined)){
+            from = 0;
+            to =  from + resultsPerPage//items.length - 1 ;
+        }
+        
         var div = document.createElement('div')
                   div.setAttribute("class","table");
 
-        var rowCounter = 0;
+        let NumberOfPages = Math.ceil(items.length / RESULTS_PER_PAGE,100);
+            console.log("Number of pages:",NumberOfPages)
 
-        item.forEach(row => {
-
-            let rowDiv = createRowDiv(rowCounter)
-            let fieldCounter = 0;
-        
+            // create rows
+        //items.forEach((row,rIndex) => {
+     for (var rIndex = from; rIndex<=to;rIndex++)
+     {
+            let rowDiv = createRowDiv(rIndex)
             // add index
-            rowDiv.appendChild(createFieldDiv(rowCounter,"rownumber",rowCounter));
+            rowDiv.appendChild(createFieldDiv(rIndex,"rownumber",rIndex));
 
-            row.forEach(field=>{
-                let fieldDiv = createFieldDiv(field,fieldCounter,rowCounter);
-                rowDiv.appendChild(fieldDiv);
-                fieldCounter++;
-        })
 
+            // create fields;          
+            items[rIndex].forEach((field,fIndex)=>{
+                            let fieldDiv = createFieldDiv(field,fIndex,rIndex);
+                            rowDiv.appendChild(fieldDiv);
+                         });
             div.appendChild(rowDiv);
-            rowCounter++;
-        });
+    }
+        //});
+
+        div.appendChild(createPageSelector(NumberOfPages));
 
         return div;
 
@@ -130,6 +143,20 @@ var validators = [
          var regex = new RegExp(regex);
          return regex.test(value);
     }
+    
+    function createPageSelector(numberOfPages,resultsPerPage){
 
-
+        let ul = document.createElement('ul');
+            ul.setAttribute('class','pagination') // bootstrap pagination;
+        
+        for(var i = 0; i <= numberOfPages;i++)
+        {
+        let li = document.createElement('li');
+            let a = document.createElement('a');
+                    a.innerText= i; 
+            li.appendChild(a)
+            ul.appendChild(li);
+        }
+        return ul;
+    }
 });

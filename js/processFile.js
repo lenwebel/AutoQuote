@@ -6,7 +6,7 @@ var fileData;
 
 $(function(){
 
-var RESULTS_PER_PAGE = 25;
+var RESULTS_PER_PAGE = 100;
 
 
 var validators = [
@@ -54,7 +54,7 @@ var validators = [
             Papa.parse(fileInput.files[0], {
                 complete: function(results) {
                 fileData = results;
-                ProcessFileData(25);
+                ProcessFileData(RESULTS_PER_PAGE);
             }
         });
     };
@@ -74,18 +74,20 @@ var validators = [
     function writeToDiv(resultsPerPage,from =null){
         
         var items = this;
-        
+        var pageNumbers ;
         if(resultsPerPage != null && resultsPerPage != undefined && (from == null || from == undefined)){
             from = 0;
-            to =  from + resultsPerPage//items.length - 1 ;
-        }
-        
+           }
+             to =  from + resultsPerPage;//items.length - 1 ;
+    
         var div = document.createElement('div')
                   div.setAttribute("class","table");
 
-        let NumberOfPages = Math.ceil(items.length / RESULTS_PER_PAGE,100);
+        let NumberOfPages = Math.ceil(items.length / RESULTS_PER_PAGE,100)-1;
             console.log("Number of pages:",NumberOfPages)
-
+          
+            pageNumbers = createPageSelector(NumberOfPages,resultsPerPage);
+            div.appendChild(pageNumbers); // add pageNumbers to top;
             // create rows
         //items.forEach((row,rIndex) => {
      for (var rIndex = from; rIndex<=to;rIndex++)
@@ -104,7 +106,7 @@ var validators = [
     }
         //});
 
-        div.appendChild(createPageSelector(NumberOfPages));
+        div.appendChild(pageNumbers);
 
         return div;
 
@@ -117,12 +119,18 @@ var validators = [
             validators.forEach((validator,vindex)=>{
                 data.forEach((row,rindex) => {
                     if(validate(row[vindex],validators[vindex]) ===false){
-                        document.getElementById(rindex+"_"+vindex).classList.toggle("validation_error")
+                        toggleClass(rindex+"_"+vindex,"validation_error")
                     }else{
-                        document.getElementById(rindex+"_"+vindex).classList.toggle("validation_success")
+                        toggleClass(rindex+"_"+vindex,"validation_success");
                     }
                 });
         });
+    }
+    function toggleClass(elementName,className){
+        let element  = document.getElementById(elementName)
+        if(element){
+            element.classList.toggle("validation_success")
+        }
     }
 
     function createFieldDiv(value, fieldIndex,rowIndex ){
@@ -149,13 +157,20 @@ var validators = [
         let ul = document.createElement('ul');
             ul.setAttribute('class','pagination') // bootstrap pagination;
         
-        for(var i = 0; i <= numberOfPages;i++)
+        for(var i = 1; i <= numberOfPages;i++)
         {
-        let li = document.createElement('li');
+            let li = document.createElement('li');
             let a = document.createElement('a');
+                    a.setAttribute("data-value",i)
                     a.innerText= i; 
-            li.appendChild(a)
-            ul.appendChild(li);
+                    a.onclick = function(e){
+                        debugger;
+                        
+                        let i= e.currentTarget.getAttribute("data-value");
+                        ProcessFileData(resultsPerPage,((i * resultsPerPage) - resultsPerPage));
+                    };
+                    li.appendChild(a)
+                   ul.appendChild(li);
         }
         return ul;
     }

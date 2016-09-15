@@ -1,0 +1,61 @@
+<html>
+
+<head>
+    <title>AutoQuote</title>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/papaparse/papaparse.min.js"></script>
+    <script src="/js/processFile.js"></script>
+    <script src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/content/css/site.css">
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css">
+
+
+
+    <script type="text/javascript">
+
+    </script>
+    <style>
+
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <div class="jumbotron">
+            <h2>Autoquote</h2>
+<div class="row">
+            <div class="dropdown col-md-2">
+                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="true">Quote Template: <span class="caret"></span></button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">Motor quote</a></li>
+                    <li><a href="#">Home quote</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4"><span id="selectedtemplate">Select a quote template</span></div>
+            </div>
+            <div class="form_container">
+            <form action="" method="post">
+                <div class="fileupload_container">
+                    <input id="csv" type="file"></br>
+                </div>
+                <input type="submit" value="Upload" />
+            </form>
+            </div>
+        </div>
+        </br>
+        </br>
+
+
+
+        <output id="out">
+            file contents will appear here
+        </output>
+    </div>
+
+</body>
+
+
+</html>

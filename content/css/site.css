@@ -4,6 +4,9 @@
     
 }
 
+li a {
+    cursor: pointer;
+}
 .table {
     padding-left:50px;
 }
@@ -32,10 +35,12 @@ width:40px;
 .row_0{
      border-top:1px solid gray;
     font-weight: bold;
+    background-color: darkslateblue;
+    color:whitesmoke;
 }
 
 .validation_error{
-    background-color: tomato;
+    background-color: #f9d8d2;
 }
 
 .validation_success{
@@ -61,4 +66,9 @@ width:40px;
 
 #selectedtemplate{
     line-height: 34px;
+}
+
+.field_rownumber{
+  background-color: darkslateblue;
+    color:whitesmoke;
 }

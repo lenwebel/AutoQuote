@@ -6,12 +6,14 @@ var fileData;
 
 $(function(){
 
-var RESULTS_PER_PAGE = 100;
+var RESULTS_PER_PAGE = 50;
 
 
-var validators = [
-    "\\b[0-9]*\\b|[' ']" // numeric only.
-    ];
+//var validators = [
+//    null,//"\\b[0-9]*\\b|[' ']" // numeric only.
+//    null,//,"^[aA]"
+//    null, //,"^[bB]"
+//    ];
 
     var HomeTemplate = [
         'Member Number',
@@ -86,10 +88,19 @@ var validators = [
         let NumberOfPages = Math.ceil(items.length / RESULTS_PER_PAGE,100)-1;
             console.log("Number of pages:",NumberOfPages)
           
-            pageNumbers = createPageSelector(NumberOfPages,resultsPerPage);
-            div.appendChild(pageNumbers); // add pageNumbers to top;
+            div.appendChild(createPageSelector(NumberOfPages,resultsPerPage)); // add pageNumbers to top;
             // create rows
         //items.forEach((row,rIndex) => {
+     if(from !==0){
+         let rowDiv = createRowDiv(0)
+             rowDiv.appendChild(createFieldDiv(0,"rownumber",0));
+                items[0].forEach((field,fIndex)=>{
+                            let fieldDiv = createFieldDiv(field,fIndex,0);
+                            rowDiv.appendChild(fieldDiv);
+                         });
+            div.appendChild(rowDiv);
+     }       
+
      for (var rIndex = from; rIndex<=to;rIndex++)
      {
             let rowDiv = createRowDiv(rIndex)
@@ -106,7 +117,7 @@ var validators = [
     }
         //});
 
-        div.appendChild(pageNumbers);
+            div.appendChild(createPageSelector(NumberOfPages,resultsPerPage));
 
         return div;
 
@@ -118,7 +129,10 @@ var validators = [
 
             validators.forEach((validator,vindex)=>{
                 data.forEach((row,rindex) => {
-                    if(validate(row[vindex],validators[vindex]) ===false){
+                    if(rindex===0){return;}
+                    var isValid = validate(row[vindex],validators[vindex]);
+                    
+                    if(isValid === false){
                         toggleClass(rindex+"_"+vindex,"validation_error")
                     }else{
                         toggleClass(rindex+"_"+vindex,"validation_success");
@@ -129,7 +143,7 @@ var validators = [
     function toggleClass(elementName,className){
         let element  = document.getElementById(elementName)
         if(element){
-            element.classList.toggle("validation_success")
+            element.classList.toggle(className)
         }
     }
 
@@ -148,23 +162,23 @@ var validators = [
     }
 
     function validate(value,regex){
-         var regex = new RegExp(regex);
-         return regex.test(value);
+         var re = new RegExp(regex);
+         let result  =  re.test(value);
+         return result;
     }
     
     function createPageSelector(numberOfPages,resultsPerPage){
 
         let ul = document.createElement('ul');
-            ul.setAttribute('class','pagination') // bootstrap pagination;
+            ul.setAttribute('class','pagination'); // bootstrap pagination;
         
         for(var i = 1; i <= numberOfPages;i++)
         {
             let li = document.createElement('li');
             let a = document.createElement('a');
                     a.setAttribute("data-value",i)
-                    a.innerText= i; 
+                    a.innerText= String("0" + i).slice(-2);; 
                     a.onclick = function(e){
-                        debugger;
                         
                         let i= e.currentTarget.getAttribute("data-value");
                         ProcessFileData(resultsPerPage,((i * resultsPerPage) - resultsPerPage));
